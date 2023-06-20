@@ -7,10 +7,10 @@ class reduced_row_echelon_form:
     def __init__(self):
         self.x = None
         self.pivot_num = 0
-        self.above_pivot_row_entry_list = []             #this list temporarily stores the entries above current pivot row
-        self.is_first_nonzero_entry = True               #to determine the first nonzero entry below current pivot row
+        self.above_pivot_row_entry_list = []
+        self.is_first_nonzero_entry = True
 
-    def fit(self, x = None):
+    def fit(self, x=None):
         if len(np.array(x).shape) != 2:
             raise ValueError("Matrix should be in 2-dimension form")
         if np.array(x).dtype != 'float' and np.array(x).dtype != 'int':
@@ -22,17 +22,18 @@ class reduced_row_echelon_form:
         m, n = self.x.shape
         self.x = list(self.x)
         for j in range(n):
-            self.above_pivot_row_entry_list = []             #clean the list for each column cycle
-            self.is_first_nonzero_entry = True               #renew the boolean value for each column cycle
+            self.above_pivot_row_entry_list = []  # clean the list for each column cycle
+            self.is_first_nonzero_entry = True  # renew the boolean value for each column cycle
             for i in range(m):
                 if i < self.pivot_num:
                     self.above_pivot_row_entry_list.append(self.x[i][j])
                 else:
-                    if self.x[i][j] == 0:
+                    if np.abs(self.x[i][j]) < 0.00001 :
+                        self.x[i][j] = 0
                         continue
                     else:
-                        self.x[i] = self.x[i] / self.x[i][j]         #set the first entry to 1
-                        if self.is_first_nonzero_entry:     #if the first nonzero entry found, set its row as pivot row
+                        self.x[i] = self.x[i] / self.x[i][j]                      # set the first entry to 1
+                        if self.is_first_nonzero_entry:                      # if the first nonzero entry found, set its row as pivot row
                             self.x[self.pivot_num], self.x[i] = self.x[i], self.x[self.pivot_num]
                             for k in range(len(self.above_pivot_row_entry_list)):
                                 self.x[k] = self.x[k] - self.x[self.pivot_num] * self.above_pivot_row_entry_list[k]
@@ -49,17 +50,10 @@ class reduced_row_echelon_form:
 
 if __name__ == '__main__':
     rref = reduced_row_echelon_form()
-    x = [[1, 2, 3, 7], [4, 8, 12, 28], [7, 8, 9, 9], [1, 2, 7, 0]]
+    x = [[1, 2, 2, 2], [2, 4, 6, 8], [3, 6, 8, 10]]
     rref.fit(x)
     result = rref.transform()
     print(result)
-
-
-
-
-
-
-
 
 
 
